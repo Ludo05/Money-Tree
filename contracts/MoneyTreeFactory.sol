@@ -58,13 +58,13 @@ contract MoneyTreeFactory {
         address payable recipient;
         uint256 collateral;
         uint256 amount;
-        AssetsType asset;
+        string asset;
         LoanState state;
     }
 
     mapping(uint256 => Loan) public loans;
 
-    event LoanGot(address indexed recipient, uint256 indexed loanId, uint256 collateral, uint256 amount);
+    event LoanGot(address indexed recipient, uint256 indexed loanId, string assetType, uint256 collateral, uint256 amount);
     event LoanSettled(address recipient, uint256 indexed loanId, uint256 collateral, uint256 amount);
     event CollateralIncreased(address indexed recipient, uint256 indexed loanId, uint256 collateral);
     event CollateralDecreased(address indexed recipient, uint256 indexed loanId, uint256 collateral);
@@ -130,11 +130,6 @@ contract MoneyTreeFactory {
         liquidator = Liquidator(_liquidatorAddr);
     }
 
-    function testBurn(address account, uint256 amount)
-    external {
-        MoneyTree(moneyTreeAddr).burn(account, amount);
-    }
-
     /**
      * @notice Set oracle's address.
      * @param _DaoAddr The oracle's contract address.
@@ -175,14 +170,16 @@ contract MoneyTreeFactory {
     throwIfEqualToZero(amount)
     throwIfEqualToZero(msg.value)
     {
+        require (keccak256(abi.encodePacked(asset)) != keccak256(abi.encodePacked("AVAX")), "PLEASE PROVIDE AVAX");
         require (amount <= MAX_LOAN, EXCEEDED_MAX_LOAN);
         require (minCollateral(amount, asset) <= msg.value, INSUFFICIENT_COLLATERAL);
         uint256 loanId = ++lastLoanId;
         loans[loanId].recipient = payable(msg.sender);
+        loans[loanId].asset = asset;
         loans[loanId].collateral = msg.value;
         loans[loanId].amount = amount;
         loans[loanId].state = LoanState.ACTIVE;
-        emit LoanGot(msg.sender, loanId, msg.value, amount);
+        emit LoanGot(msg.sender, loanId, asset, msg.value, amount);
         MoneyTree(moneyTreeAddr).mint(msg.sender, amount);
         MoneyTree(moneyTreeAddr).increaseAllowanceToSpender(moneyTreeFactoryAddress,amount);
 

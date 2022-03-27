@@ -17,7 +17,7 @@ contract Assets {
 
     }
 
-    function getPriceForAsset(string memory asset) public view returns (int) {
+    function getPriceForAsset(string memory asset) public view returns (int256) {
         if (keccak256(abi.encodePacked(asset)) == keccak256(abi.encodePacked("AVAX"))) {
             (,int price,,,) = AVAX.latestRoundData();
             return price;

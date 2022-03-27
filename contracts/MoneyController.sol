@@ -19,7 +19,6 @@ contract MoneyController {
     }
 
 
-
     function _transfer(uint amount) external payable {
         require(msg.sender == owner, "OnlyOwner");
         payable(address(this)).transfer(amount);

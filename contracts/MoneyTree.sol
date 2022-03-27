@@ -16,7 +16,6 @@ contract MoneyTree is ERC20, Ownable, ERC20Burnable {
         string memory _tokenSymbol,
         uint256 initialSupply
     ) payable ERC20(_tokenName, _tokenSymbol) {
-
         _mint(msg.sender, initialSupply);
     }
 

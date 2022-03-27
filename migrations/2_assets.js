@@ -1,5 +1,5 @@
-const Asset = artifacts.require("Assets")
+const MoneyTreeFactory = artifacts.require("MoneyTreeFactory")
 
 module.exports = async function (deployer) {
-     deployer.deploy(Asset)
+     await deployer.deploy(MoneyTreeFactory)
 }
